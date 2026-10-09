@@ -7,6 +7,8 @@ export type ItemStatus = 'not_started' | 'needs_evidence' | 'awaiting_rfi' | 're
 export type TaskStatus = 'active' | 'waiting_human' | 'ready_for_review' | 'completed'
 
 type Row = Record<string, unknown>
+type ChunkRow = { id: string; document_id: string; body: string; position: number; document_title: string; source_type: string }
+type ItemRow = { id: string; project_id: string; title: string; criteria: string; status: ItemStatus; created_at: string }
 const now = () => new Date().toISOString()
 const id = () => randomUUID()
 const sha256 = (value: string) => `0x${createHash('sha256').update(value).digest('hex')}`
@@ -83,7 +85,7 @@ export function createStore(filename: string) {
   function retrieve(projectId: string, query: string, limit = 4) {
     const queryTokens = tokens(query)
     const rows = all(`SELECT c.id, c.document_id, c.body, c.position, d.title AS document_title, d.source_type
-      FROM chunks c JOIN documents d ON d.id = c.document_id WHERE c.project_id = ?`, projectId)
+      FROM chunks c JOIN documents d ON d.id = c.document_id WHERE c.project_id = ?`, projectId) as unknown as ChunkRow[]
     const scored = rows.map(row => {
       const bodyTokens = tokens(String(row.body))
       const overlap = [...queryTokens].filter(t => bodyTokens.has(t)).length
@@ -211,7 +213,7 @@ export function createStore(filename: string) {
     const item = get('SELECT * FROM items WHERE id = ? AND project_id = ?', itemId, projectId)
     if (!item) throw new Error('Acceptance item not found')
     return {
-      ...item,
+      ...(item as unknown as ItemRow),
       task: get('SELECT * FROM tasks WHERE item_id = ?', itemId) ?? null,
       evidence: all(`SELECT e.id, e.score, c.body, c.position, d.title AS document_title, d.id AS document_id
         FROM evidence e JOIN chunks c ON c.id = e.chunk_id JOIN documents d ON d.id = c.document_id WHERE e.item_id = ? ORDER BY e.score DESC`, itemId),
