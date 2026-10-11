@@ -19,7 +19,7 @@ export function LoginForm({ onLogin }: { onLogin: (user: User) => void }) {
       onLogin(signUp ? await register(String(values.get('name')), email, password) : await login(email, password))
     } catch (err) { setError(err instanceof Error ? err.message : '登录失败，请重试。') } finally { setBusy(false) }
   }
-  return <div className="flex flex-col gap-6"><Card><CardHeader className="text-center"><CardTitle className="text-xl">{signUp ? '创建你的账号' : '欢迎回来'}</CardTitle><CardDescription>{signUp ? '开始管理你的项目、清单和任务' : '登录项目家，接着上次的工作继续'}</CardDescription></CardHeader><CardContent><form onSubmit={submit}><FieldGroup>
+  return <div className="flex flex-col gap-6"><Card className="shadow-sm"><CardHeader className="text-center"><CardTitle className="text-xl">{signUp ? '创建你的账号' : '欢迎回来'}</CardTitle><CardDescription>{signUp ? '让每一次对话，接着推进项目' : '登录项目家，接着上次的工作继续'}</CardDescription></CardHeader><CardContent><form onSubmit={submit}><FieldGroup>
     {signUp && <Field><FieldLabel htmlFor="name">姓名</FieldLabel><Input id="name" name="name" autoComplete="name" required maxLength={60} placeholder="怎么称呼你" /></Field>}
     <Field><FieldLabel htmlFor="email">邮箱</FieldLabel><Input id="email" name="email" type="email" autoComplete="email" required placeholder="你的邮箱" /></Field>
     <Field><FieldLabel htmlFor="password">密码</FieldLabel><Input id="password" name="password" type="password" autoComplete={signUp ? 'new-password' : 'current-password'} minLength={8} required placeholder="至少 8 位" /></Field>
