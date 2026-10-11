@@ -1,25 +1,31 @@
-# Submission status — 2026-10-10
-
-## Ready locally
-- Agent-focused interface, browser storage, Human Input, continuation, evidence/RFI tools.
-- Default OpenRouter / Claude Opus 5.5; server-only key.
-- Technical-demo and pitch scripts: CLAUDE_VIDEO_HANDOFF.md.
-- Synthetic evidence for recording: DEMO_EVIDENCE.md.
-- Submission text: ENTRY_COPY.md. Chain paragraph intentionally pending real proof.
-- Logo: ../../public/project-plus-logo.png (1024×1024 PNG).
+# Submission status — 2026-10-11
 
 ## Published and verified
-- Website: https://project-plus-agent.vercel.app . Remote Opus tool call and browser Human Input pause verified.
-- Public GitHub: https://github.com/HLingSoft/project-plus-agent (default branch main).
+- Website: https://project-plus-agent.vercel.app . Real OpenRouter / Opus responses and Human Input pause/resume verified.
+- Public GitHub: https://github.com/HLingSoft/project-plus-agent . Main branch includes Monad integration.
+- Monad Testnet, chain 10143: contract `0x508A23192d1F3e6fDE6E26324d9Ff6d6955cef72`.
+- Deployment receipt successful; nonempty code read back.
+- Actual browser-exported synthetic Human Input record anchored in transaction `0x9626957cf117d063ad43c06c0298b913e40f60bd1b594d039e748f9e1a44cffb`, block 70047697.
+- Production browser verifier confirms event, receipt and latest digest. Modified record rejected; wrong digest and other owner return false.
+- Contract proof establishes record consistency, not inspection truth. Public sample contains a Human Input decision, not a completed acceptance report.
+- Local signing path verified. Browser injected-wallet signing is implemented but has not been exercised in this browser.
+- Build and existing tests pass; three record-proof tests pass. Existing lint warnings remain.
 
-## Must complete before final submission
-- Monad testnet deployment, actual transaction and readback, and product integration. EvidenceAnchor.sol exists; this alone does not meet the requirement.
-- Technical video ≤3 minutes and pitch ≤2 minutes: user will arrange Claude production from the provided handoff.
-- Updated saved submission and final review.
+## Metropolis draft
+- Google login restored using the original account.
+- Logo, title, description, GTM, public repository and live product saved.
+- Review access code supplied only to private Judge access instructions with explicit user permission.
+- Checklist: 4/5; primary track, project details, logo and live product complete.
+- Primary track: Trust, Identity & AI Infrastructure. No unsupported sponsor bounty claims.
+- Remaining required fields: technical demo video (≤3 minutes) and pitch video (≤2 minutes).
+- Final submission has NOT occurred. Saved draft is not final submission.
+- Deadline verified in UI: October 13, 2026, 20:59 PDT.
 
-Deadline last verified in submission UI: October 13, 20:59 PDT. Do not treat a saved draft as submitted.
+## Video handoff ready
+- START_HERE_FOR_CLAUDE.md: instructions to forward.
+- CLAUDE_VIDEO_HANDOFF.md: shot list and English narration for both videos.
+- DEMO_EVIDENCE.md: synthetic reports and RFI reply.
+- MONAD_READINESS.md: actual deployment details and recording steps.
+- Local ZIP: output/ProjectPlus-Claude-Video-Kit.zip . No secrets included.
 
-## Access and current blockers
-- Review code is stored only on the owner machine at `.local-secrets/reviewer-access.txt`; never commit it. Open the website, enter this code, then create a local browser account.
-- Metropolis session expired on October 10; original login provider must be confirmed before updating the draft. No final submission made.
-- Wallet selection is pending; see MONAD_READINESS.md.
+Wallet private key stays in ignored `.local-secrets/monad-testnet-wallet.json` (0600). The model key remains server-side. Never place either in submission fields or video.
