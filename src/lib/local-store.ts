@@ -120,7 +120,7 @@ export function retrieve(project: Project, query: string): Evidence[] {
       return { id: `${doc.id}:${position}`, item_id: '', document_id: doc.id, document_title: doc.title, position, body, score }
     })
     if (!results.some(r => r.score >= .25)) return []
-    return results.filter(r => r.score >= .15 || gapPattern.test(r.body))
+    return results.filter((r, i) => r.score >= .15 || gapPattern.test(r.body) || (results[i - 1]?.score ?? 0) >= .25 || (results[i + 1]?.score ?? 0) >= .25)
   }).sort((a, b) => b.score - a.score).slice(0, 5)
 }
 function itemOf(project: Project, itemId: string) { const item = project.items.find(i => i.id === itemId); if (!item) throw new Error('验收任务不存在。'); return item }

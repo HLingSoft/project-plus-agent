@@ -17,6 +17,16 @@ export const toolLabels: Record<ToolName, string> = { get_project_state: '读取
 export function projectContext(p: Project) {
   return { name: p.name, continuity: continuity(p), facts: p.facts, checklists: p.checklists.map(c => ({id:c.id,title:c.title})), counts: { tasks: p.items.length, documents: p.documents.length }, human_inputs: p.human_inputs.slice(0, 20), rfis: p.rfis.slice(0, 20), steps: p.tasks.slice(0, 30) }
 }
+export function findTemplates(templates: Template[], query = '') {
+  const q = query.trim().toLowerCase()
+  if (!q) return templates
+  const terms = new Set([...(q.match(/[a-z0-9]{2,}/g) ?? []), ...(q.match(/[\p{Script=Han}]+/gu) ?? []).flatMap(word => Array.from({ length: Math.max(0, word.length - 1) }, (_, i) => word.slice(i, i + 2)))])
+  return templates.map(template => {
+    const text = `${template.name} ${template.description} ${template.tasks.map(t => `${t.name} ${t.description}`).join(' ')}`.toLowerCase()
+    const score = text.includes(q) ? 2 : [...terms].filter(term => text.includes(term)).length / Math.max(1, terms.size)
+    return { template, score }
+  }).filter(result => result.score >= .25).sort((a, b) => b.score - a.score).slice(0, 6).map(result => result.template)
+}
 // Executed inside the same IndexedDB transaction as the resulting project state.
 export function executeAgentTool(p: Project, templates: Template[], conversationId: string, callId: string, name: string, input: unknown): unknown {
   const definition = toolDefinitions[name as ToolName]
@@ -30,7 +40,7 @@ export function executeAgentTool(p: Project, templates: Template[], conversation
   let output: unknown
   switch (name) {
     case 'get_project_state': output = projectContext(p); break
-    case 'list_templates': output = templates.filter(t => !args.query || `${t.name} ${t.description}`.includes(args.query)).map(t => ({ id: t.id, name: t.name, description: t.description, count: t.tasks.length })); break
+    case 'list_templates': output = findTemplates(templates, args.query).map(t => ({ id: t.id, name: t.name, description: t.description, count: t.tasks.length })); break
     case 'apply_template': {
       const template = templates.find(t => t.id === args.template_id); if (!template) throw new Error('清单模板不存在。')
       const id = applyTemplate(p, template); output = { checklist_id: id, items: p.items.filter(i => i.checklist_id === id) }; break
@@ -39,8 +49,8 @@ export function executeAgentTool(p: Project, templates: Template[], conversation
     case 'search_history': {
       const query = args.query!.toLowerCase(); output = p.conversations.flatMap(c => (c.uiMessages ?? []).flatMap(m => m.parts.filter(part => part.type === 'text' && part.text.toLowerCase().includes(query)).map(part => ({ conversation: c.title, message_id: m.id, role: m.role, text: part.type === 'text' ? part.text.slice(Math.max(0, part.text.toLowerCase().indexOf(query) - 200), part.text.toLowerCase().indexOf(query) + 1200) : '' })))).slice(-6); break
     }
-    case 'search_documents': output = retrieve(p, args.query!); break
-    case 'analyze_item': analyze(p, args.item_id!); output = { item: p.items.find(i => i.id === args.item_id), evidence: p.evidence.filter(e => e.item_id === args.item_id), checkpoint: p.tasks.find(t => t.item_id === args.item_id) }; break
+    case 'search_documents': output = retrieve(p, args.query!).map(e => ({ ...e, paragraph: e.position + 1 })); break
+    case 'analyze_item': analyze(p, args.item_id!); output = { item: p.items.find(i => i.id === args.item_id), evidence: p.evidence.filter(e => e.item_id === args.item_id).map(e => ({ ...e, paragraph: e.position + 1 })), checkpoint: p.tasks.find(t => t.item_id === args.item_id) }; break
     case 'draft_rfi': output = { rfi: draftRfi(p, args.item_id!), waiting_human: true }; break
     case 'ask_human': {
       const h = { id: uid(), kind: 'question' as const, item_id: '', rfi_id: '', conversation_id: conversationId, question: args.question!, options: args.options ?? [], status: 'pending' as const, decision: null }
