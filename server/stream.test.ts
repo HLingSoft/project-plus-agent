@@ -14,7 +14,7 @@ test('AI SDK proxy emits UI text stream using a controlled model fixture', async
   })
   await new Promise<void>(resolve => mock.listen(0, '127.0.0.1', resolve))
   const addr = mock.address(); assert.ok(addr && typeof addr !== 'string')
-  const child = spawn(process.execPath, ['--import', 'tsx', 'server/index.ts'], { env: { ...process.env, PORT: '0', MODEL_API_KEY: 'test-fixture', MODEL_API_URL: `http://127.0.0.1:${addr.port}/v1/chat/completions`, MODEL_NAME: 'fixture' }, stdio: ['ignore', 'pipe', 'pipe'] })
+  const child = spawn(process.execPath, ['--import', 'tsx', 'server/index.ts'], { env: { ...process.env, PORT: '0', DEMO_ACCESS_CODE: '', VERCEL: '', MODEL_API_KEY: 'test-fixture', MODEL_API_URL: `http://127.0.0.1:${addr.port}/v1/chat/completions`, MODEL_NAME: 'fixture' }, stdio: ['ignore', 'pipe', 'pipe'] })
   try {
     const url = await new Promise<string>((resolve, reject) => {
       const timer = setTimeout(() => reject(new Error('proxy startup timed out')), 10000)
