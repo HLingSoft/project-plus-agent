@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { analyze, applyTemplate, continuity, draftRfi, event, retrieve, uid, type Project, type Template } from './local-store.ts'
+import { analyze, applyTemplate, continuity, draftRfi, event, retrieve, uid, type Project, type Template } from './local-store.js'
 
 export const toolDefinitions = {
   get_project_state: { description: '读取任务进展、待确认事项、RFI 与项目约定；接续工作时先调用。', inputSchema: z.object({}) },

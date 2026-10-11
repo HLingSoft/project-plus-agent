@@ -3,8 +3,8 @@ import { resolve } from 'node:path'
 import { config } from 'dotenv'
 import { streamText, convertToModelMessages, pipeUIMessageStreamToResponse, toUIMessageStream } from 'ai'
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
-import { accessToken, cookieName, equalSecret, hasAccess } from './access.ts'
-import { toolDefinitions } from '../src/lib/agent-tools.ts'
+import { accessToken, cookieName, equalSecret, hasAccess } from './access.js'
+import { toolDefinitions } from '../src/lib/agent-tools.js'
 config({ path: resolve(process.cwd(), '.env.local'), quiet: true })
 const app = express()
 app.use(express.json({ limit: '1mb' }))

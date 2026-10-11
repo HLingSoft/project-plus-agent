@@ -1,5 +1,5 @@
 import type { UIMessage } from 'ai'
-import { templateSnapshot } from './template-snapshot.ts'
+import { templateSnapshot } from './template-snapshot.js'
 export type Status = 'not_started' | 'needs_evidence' | 'awaiting_rfi' | 'ready_for_review' | 'accepted'
 export type Template = { id: string; name: string; description: string; tasks: { name: string; description: string; order: number }[]; importedAt: string }
 export type Item = { id: string; checklist_id: string | null; title: string; criteria: string; status: Status; created_at: string }
