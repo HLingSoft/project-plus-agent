@@ -8,9 +8,11 @@
 - Submission text: ENTRY_COPY.md. Chain paragraph intentionally pending real proof.
 - Logo: ../../public/project-plus-logo.png (1024×1024 PNG).
 
-## Must complete before final submission
-- Public website deployed: https://project-plus-agent.vercel.app . Remote model verification is recorded below.
+## Published and verified
+- Website: https://project-plus-agent.vercel.app . Remote Opus tool call and browser Human Input pause verified.
 - Public GitHub: https://github.com/HLingSoft/project-plus-agent (default branch main).
+
+## Must complete before final submission
 - Monad testnet deployment, actual transaction and readback, and product integration. EvidenceAnchor.sol exists; this alone does not meet the requirement.
 - Technical video ≤3 minutes and pitch ≤2 minutes: user will arrange Claude production from the provided handoff.
 - Updated saved submission and final review.
