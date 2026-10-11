@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls, type UIMessage } from 'ai'
 import { Streamdown } from 'streamdown'
@@ -17,9 +17,12 @@ import { continuity, resolveInput, uid, type Project, type Conversation, type Te
 import { answerHuman, executeAgentTool, projectContext, toolLabels, type ToolName } from '@/lib/agent-tools'
 import { recoverMessages, requestHistory } from '@/lib/chat-history'
 
+const RecordProof = lazy(() => import('@/components/record-proof').then(m => ({ default: m.RecordProof })))
+
 type Props = { project: Project; templates: Template[]; conversation: Conversation; mode: string; mutate: (fn: (p: Project) => void) => Promise<void>; onAddDocument: () => void; onView: (view: View) => void }
 export function AgentPanel({ project, templates, conversation, mode, mutate, onAddDocument, onView }: Props) {
   const [input, setInput] = useState('')
+  const [proofOpen, setProofOpen] = useState(false)
   const [localError, setLocalError] = useState('')
   const [interrupted, setInterrupted] = useState(conversation.execution === 'running' || conversation.execution === 'interrupted')
   const [localBusy, setLocalBusy] = useState(false)
@@ -111,7 +114,7 @@ export function AgentPanel({ project, templates, conversation, mode, mutate, onA
   return <section className="flex min-h-0 flex-1 flex-col" aria-label="项目 Agent 工作区">
     <div className="mx-auto flex w-full max-w-3xl shrink-0 items-center gap-3 px-4 py-3 lg:px-6">
       <p className="min-w-0 flex-1 truncate text-sm text-muted-foreground">{conversation.title === '新对话' ? '新任务' : conversation.title}</p>
-      <DropdownMenu><DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label="任务资料与结果" />}><MoreHorizontalIcon /></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuGroup><DropdownMenuItem onClick={() => onView('tasks')}>查看验收结果</DropdownMenuItem><DropdownMenuItem onClick={() => onView('rfis')}>查看 RFI</DropdownMenuItem><DropdownMenuItem onClick={() => onView('library')}>选择验收标准</DropdownMenuItem><DropdownMenuItem onClick={() => onView('documents')}>项目资料与约定</DropdownMenuItem></DropdownMenuGroup></DropdownMenuContent></DropdownMenu>
+      <DropdownMenu><DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label="任务资料与结果" />}><MoreHorizontalIcon /></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuGroup><DropdownMenuItem onClick={() => onView('tasks')}>查看验收结果</DropdownMenuItem><DropdownMenuItem onClick={() => onView('rfis')}>查看 RFI</DropdownMenuItem><DropdownMenuItem onClick={() => onView('library')}>选择验收标准</DropdownMenuItem><DropdownMenuItem onClick={() => onView('documents')}>项目资料与约定</DropdownMenuItem><DropdownMenuItem onClick={() => setProofOpen(true)}>验证项目记录</DropdownMenuItem></DropdownMenuGroup></DropdownMenuContent></DropdownMenu>
       {mode !== 'model' && <Badge variant="outline">未连接模型</Badge>}
     </div>
     <div ref={scroll} className={cn("min-h-0 overflow-y-auto overscroll-contain", chat.messages.length || pending.length ? "flex-1" : "mt-auto")} role="log" tabIndex={0} aria-live="polite" aria-relevant="additions" aria-label="对话记录" onScroll={e => { const el = e.currentTarget; follow.current = el.scrollHeight - el.scrollTop - el.clientHeight < 100; setAway(!follow.current) }}>
@@ -137,6 +140,7 @@ export function AgentPanel({ project, templates, conversation, mode, mutate, onA
         <div className="flex items-center justify-between gap-3"><Button type="button" variant="ghost" size="sm" onClick={onAddDocument}><PaperclipIcon data-icon="inline-start" />添加资料</Button>{busy ? <Button type="button" size="icon" aria-label="停止生成" onClick={stopGeneration}><SquareIcon /></Button> : <Button type="submit" size="icon" aria-label="发送消息" disabled={!input.trim() || !!pending.length}><ArrowUpIcon /></Button>}</div>
       </form><p className="mt-2 text-center text-xs text-muted-foreground">{mode === 'model' ? '重要决定由你确认。项目进展保存在当前浏览器。' : '当前为流程预览，配置模型后可开始实际执行。'}</p>
     </div>
+    {proofOpen && <Suspense fallback={null}><RecordProof project={project} open={proofOpen} onOpenChange={setProofOpen} /></Suspense>}
   </section>
 }
 function HumanInputCard({ input, project, busy, onRespond }: { input: HumanInput; project: Project; busy: boolean; onRespond: (value: string) => void }) {

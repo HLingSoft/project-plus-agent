@@ -1,18 +1,33 @@
-# Monad 上链前检查与演示边界
+# Monad 测试网部署与复验
 
-当前状态：EvidenceAnchor.sol 已有源码与编译产物，但尚无部署地址、测试网交易或产品钱包入口。公开网站部署成功不等于产品已在 Monad 上运行。
+- Chain ID：10143
+- RPC：https://testnet-rpc.monad.xyz
+- 比赛专用钱包：0xfa6a1383825de404c86e067284509756A9339E06
+- 合约：0x508A23192d1F3e6fDE6E26324d9Ff6d6955cef72
+- 部署交易：https://testnet.monadscan.com/tx/0xdd07d13ea235da8f52e3c999aa34a37999ab8ae6d7e34d1f06195963969b3657
+- 实际记录交易：https://testnet.monadscan.com/tx/0x9626957cf117d063ad43c06c0298b913e40f60bd1b594d039e748f9e1a44cffb
+- 部署回执 status=1，非空代码已读回。
+- 记录回执 status=1，事件校验通过，verify= true。
+- 修改摘要：false；另一个 owner：false。
 
-官方网络与 faucet：https://docs.monad.xyz/developer-essentials/testnet 。部署时重新从官方页面核对 chain ID、RPC 和区块浏览器；不得混用主网或历史测试网状态。
+## 已验证产品路径
 
-待用户确定测试钱包后执行：
+在本地浏览器的合成项目中，Agent 请求 Human Input，人工选择“网络”后继续。通过“任务资料与结果 → 验证项目记录 → 导出当前记录”导出真实浏览器状态，用比赛钱包本地签名后，网页可读取证明并向公开 RPC 独立校验。公开样本只有这次人工决定，不能当成已经完成的验收报告。
 
-1. 使用本次比赛专用测试网钱包，获取测试 MON。不要使用生产私钥；私钥/助记词不能写进仓库、视频或提交资料。
-2. 用当前编译器重新编译 onchain/EvidenceAnchor.sol，记录 compiler 版本与产物哈希。
-3. 连接确认的测试网并估算部署 gas；钱包所有者确认交易。记录部署地址、交易哈希、chain ID 与 receipt status=1，并读回非空合约代码。
-4. 在产品中以明确的人工作用触发证据记录摘要提交。稳定序列化项目标识、验收条目、证据引用、RFI 与人类决策后计算摘要；原文不上链。摘要对象须可导出，不能只临时在服务器内生成。
-5. anchor(projectKey, root) 成功后，通过 verify(owner, projectKey, root) 读回 true；修改摘要后读回 false，另一个 owner 的记录不应匹配。
-6. 记录并展示真实浏览器交易链接与校验结果，更新提交文案与视频镜头。
+公用样本：public/monad-demo-proof.json。只含合成测试信息，无客户数据。
 
-合约限制：latestRoot 只保存该 owner/projectKey 的最新摘要；旧记录是否存在需通过 Anchored 事件追溯。摘要匹配只证明数据与提交时的记录一致，不证明检查结论真实，也不授予链下应用访问权限。当前合约不是完整的权限系统，不应写成“链上授权治理”。
+## 录制自己项目的上链流程
 
-只有完成产品入口、交易和读回之后，才能在主赛道提交材料中称为实际 Monad 集成。
+1. 完成合成验收/RFI演示后，菜单 → 验证项目记录 → 导出当前记录。
+2. 在仓库根目录运行：
+
+```sh
+node --import tsx scripts/anchor-record.ts ~/Downloads/project-plus-record.json ~/Downloads/project-plus-proof.json
+```
+
+3. 在网页“验证已有记录”选择新生成的 proof.json。记录验证通过及交易页。
+4. 需要验证篡改检测时，复制证明文件，修改 manifest.records 中的内容，保留原 root，再选择该文件；应显示“摘要不一致”。
+
+私钥保存在本机 .local-secrets/monad-testnet-wallet.json（0600，已忽略），不要上传到 Vercel、GitHub或视频。浏览器钱包按钮需要用户自有钱包且选择 Monad Testnet；该按钮未在当前浏览器签名实测。无需钱包即可验证已存在的公开证明。
+
+latestRoot 只保存最新摘要；历史证明通过成功交易的 Anchored 事件验证，并明确显示是否已被新摘要替代。匹配不证明验收真实、不授予业务权限。

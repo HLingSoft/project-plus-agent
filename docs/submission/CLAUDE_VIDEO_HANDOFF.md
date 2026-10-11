@@ -16,7 +16,7 @@
 
 1. 确认顶部不显示“未连接模型”，真实发一条消息确认服务可用。
 2. 添加 `DEMO_EVIDENCE.md` 中第一份报告，资料标题为“合成演示：弱电初检记录”。
-3. 输入：`请查找酒店客房弱电验收模板，应用到这个项目。本次只检查网络线路：查找项目资料，指出证据不足之处，起草 RFI，并停下来让我确认。`
+3. 输入：`请用关键词“弱电”查找验收模板（若无结果则列出全部模板），选择酒店装修项目客房验收检查清单（弱电）并应用到这个项目。本次只检查网络线路：查找项目资料，指出证据不足之处，起草 RFI，并停下来让我确认。`
 4. 模型若提出范围确认，如实回答；不要剪成“从不需要用户输入”。
 5. 检查真实模板已生成 3 个条目，模型调用记录可见，RFI 卡片出现后等待用户。
 6. 点击“确认草稿并继续”。此操作仅确认草稿，**不等于发送给承包商**。
@@ -35,9 +35,9 @@
 | 1:10–1:30 | Human Input 卡片停住；人工点确认 | At this point, the agent waits for human input. I can approve the draft or defer it. Approval records my decision; it does not automatically send a message or accept the work. |
 | 1:30–2:05 | 添加复测记录；新任务继续；显示历史决策和工具读回 | Now I add a simulated follow-up report and continue in a new task. The agent reads the saved project state and earlier decisions, retrieves the new evidence, and continues from that point. I do not need to reconstruct the project background. |
 | 2:05–2:25 | 展示网络线路证据、待人工复核 | The output links the inspection item to the supporting material and the clarification. Final acceptance remains a human decision. Project data and conversation history are stored in this browser. |
-| 2:25–2:45 | 仅在链上集成完成后录实际交易及校验结果 | 若 Monad 实际完成：A digest of the evidence record can be verified on Monad, while project documents stay offchain. This proves that a record matches a committed digest; it does not prove that the underlying inspection was correct. |
+| 2:25–2:45 | 打开菜单“验证项目记录”，验证真实证明，打开交易链接 | A digest of the evidence record can be verified on Monad, while project documents stay offchain. This proves that a record matches a committed digest; it does not prove that the underlying inspection was correct. |
 
-**Monad 镜头门槛：** STATUS.md 没有合约地址、交易哈希、链 ID 和读回证据时，停止制作这个镜头并通知负责人。不得用合约源码、浏览器模拟数据或其他项目交易替代。主赛道要求 Monad 上运行的产品，缺少此项时视频不能被标为最终提交版。
+**Monad 镜头已可录制：** 按 MONAD_READINESS.md 导出这次演示项目并用本地脚本签名，在页面导入证明后录制“验证通过”和真实交易页。也可使用“验证公开演示记录”，但必须明确它是单独的合成 Human Input 样本，不能把它说成当前验收项目。现有真实交易：0x9626957cf117d063ad43c06c0298b913e40f60bd1b594d039e748f9e1a44cffb。不要展示私钥或把私钥导入网页。
 
 若等模型耗时太长，可以加速等待区间，并在画面明确标注“等待过程已加速”。保留真实输入、工具、Human Input 及结果的连续关系。字幕不出现“无限记忆”“完全自主验收”“资料永不离开设备”：项目上下文会经过服务端发送给 OpenRouter。
 
@@ -55,7 +55,7 @@
 >
 > The goal is simple: let people delegate work that continues across sessions, while keeping the evidence and human decisions visible.
 
-若链上部分已完成，可在最后加入一句真实描述：
+结尾加入已实现的 Monad 描述：
 > We use Monad to make selected record digests independently verifiable, without putting project documents onchain.
 
 ## 输出与验收

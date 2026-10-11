@@ -45,3 +45,13 @@ Node.js 22+，执行 `npm install`、`npm run dev`，打开 http://localhost:517
 `server/core.ts`、`server/agent.ts` 及原有测试保留早期 SQLite/摘要逻辑，未接入当前网页；当前 API 仅提供健康状态和流式模型代理，详见 `docs/API.md`。`onchain/EvidenceAnchor.sol` 仍是未部署的合约源码。网站已部署到 Vercel；Monad 产品集成与交易读回、演示视频和比赛最终提交仍未完成。
 
 各轮验收与 OpenRouter 实测记录见 `docs/UI-VALIDATION.md`。测试服务可用 `node --import tsx scripts/qa-model.ts` 启动在 5174，使用确定性的模拟模型，不代表真实模型质量。
+
+## Monad Testnet records
+
+Open a task's overflow menu → 验证项目记录. Export the current project record, commit its digest with a testnet browser wallet, or sign the exported file locally:
+
+```sh
+node --import tsx scripts/anchor-record.ts record.json proof.json
+```
+
+The local signer reads an ignored `.local-secrets/monad-testnet-wallet.json`; never publish this file. It must contain `privateKey` for a testnet-only wallet. Verify a proof in the app without a wallet, or use the included synthetic public Human Input sample. Only the digest is onchain; exported records contain offchain project data. See [deployment and verification](docs/submission/MONAD_READINESS.md).

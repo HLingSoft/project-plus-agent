@@ -1,0 +1,13 @@
+{
+  "chainId": 10143,
+  "rpc": "https://testnet-rpc.monad.xyz",
+  "address": "0x508A23192d1F3e6fDE6E26324d9Ff6d6955cef72",
+  "owner": "0xfa6a1383825de404c86e067284509756A9339E06",
+  "transactionHash": "0xdd07d13ea235da8f52e3c999aa34a37999ab8ae6d7e34d1f06195963969b3657",
+  "blockNumber": 70047230,
+  "status": 1,
+  "compiler": "0.8.37+commit.f401782d.Emscripten.clang",
+  "evmVersion": "paris",
+  "runtimeCodeHash": "0xb600efb42ad82c3021a6d5928a1944330f1caf4ad31cf92ba1415e9f61746129",
+  "deployedAt": "2026-10-11T07:05:32.194Z"
+}
