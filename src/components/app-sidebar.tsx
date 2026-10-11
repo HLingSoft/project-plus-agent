@@ -1,0 +1,19 @@
+import { CommandIcon, MessageSquareTextIcon, CirclePlusIcon, ChevronDownIcon, LogOutIcon } from 'lucide-react'
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarGroup, SidebarGroupLabel, useSidebar } from '@/components/ui/sidebar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel } from '@/components/ui/dropdown-menu'
+import type { User, Project } from '@/lib/local-store'
+export type View = 'agent' | 'overview' | 'checklists' | 'tasks' | 'rfis' | 'library' | 'documents'
+export function AppSidebar({ activeId, projects, projectId, onProject, onCreate, onNew, onSelect, onAgent, user, onLogout }: { activeId?: string; projects: Project[]; projectId: string; onProject: (id: string) => void; onCreate: () => void; onNew: () => void; onSelect: (id: string) => void; onAgent: () => void; user: User; onLogout: () => void }) {
+  const { isMobile, setOpenMobile } = useSidebar()
+  const project = projects.find(p => p.id === projectId)
+  function go(action: () => void) { action(); if (isMobile) setOpenMobile(false) }
+  return <Sidebar collapsible="offcanvas" variant="inset"><SidebarHeader><SidebarMenu><SidebarMenuItem><SidebarMenuButton className="data-[slot=sidebar-menu-button]:p-1.5!" onClick={() => go(onAgent)}><CommandIcon className="size-5! text-primary" /><span className="text-base font-semibold">项目家 <span className="font-normal text-muted-foreground">Project+</span></span></SidebarMenuButton></SidebarMenuItem></SidebarMenu></SidebarHeader>
+    <SidebarContent>
+      <SidebarGroup><SidebarMenu><SidebarMenuItem><DropdownMenu><DropdownMenuTrigger render={<SidebarMenuButton />}><span className="truncate">{project?.name ?? '选择项目'}</span><ChevronDownIcon className="ml-auto" /></DropdownMenuTrigger><DropdownMenuContent className="max-w-72"><DropdownMenuGroup><DropdownMenuLabel>项目</DropdownMenuLabel>{projects.map(p => <DropdownMenuItem key={p.id} onClick={() => go(() => onProject(p.id))}>{p.name}</DropdownMenuItem>)}<DropdownMenuItem onClick={() => go(onCreate)}><CirclePlusIcon />新建项目</DropdownMenuItem></DropdownMenuGroup></DropdownMenuContent></DropdownMenu></SidebarMenuItem>
+      <SidebarMenuItem><SidebarMenuButton onClick={() => go(onNew)} className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"><CirclePlusIcon /><span>新任务</span></SidebarMenuButton></SidebarMenuItem></SidebarMenu></SidebarGroup>
+      <SidebarGroup><SidebarGroupLabel>历史任务</SidebarGroupLabel><SidebarMenu>{project?.conversations.map(c => <SidebarMenuItem key={c.id}><SidebarMenuButton isActive={activeId === c.id} onClick={() => go(() => onSelect(c.id))} tooltip={c.title}><MessageSquareTextIcon /><span>{c.title === '新对话' ? '新任务' : c.title}</span></SidebarMenuButton></SidebarMenuItem>)}</SidebarMenu>{!project?.conversations.length && <p className="px-2 text-xs text-muted-foreground">开始后，可以在这里接着做。</p>}</SidebarGroup>
+    </SidebarContent>
+    <SidebarFooter><SidebarMenu><SidebarMenuItem><DropdownMenu><DropdownMenuTrigger render={<SidebarMenuButton size="lg" className="aria-expanded:bg-muted" />}><Avatar className="size-8 rounded-lg"><AvatarFallback className="rounded-lg">{user.name.slice(0, 1)}</AvatarFallback></Avatar><div className="grid flex-1 text-left text-sm leading-tight"><span className="truncate font-medium">{user.name}</span><span className="truncate text-xs text-foreground/70">{user.email}</span></div></DropdownMenuTrigger><DropdownMenuContent side="top" align="end" className="min-w-56"><DropdownMenuGroup><DropdownMenuLabel>当前浏览器的本地账号</DropdownMenuLabel><DropdownMenuItem onClick={onLogout}><LogOutIcon />退出登录</DropdownMenuItem></DropdownMenuGroup></DropdownMenuContent></DropdownMenu></SidebarMenuItem></SidebarMenu></SidebarFooter>
+  </Sidebar>
+}

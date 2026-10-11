@@ -1,33 +1,41 @@
-# 项目家 Project+ AI Agent 原型
+# 项目家 Project+ AI
 
-这是一个独立的新程序，用于演示工程项目验收中的长对话与任务接续。它不接入旧版项目家 SaaS，也不复用 Torra 的运行时代码。设计参考了 Torra 关于会话原文、任务 checkpoint、来源证据与人工确认分层的架构文档。
+以 Agent 对话为主的独立工作台：从已有清单生成项目任务，检索资料、起草 RFI，并在需要决策时等待 Human Input。新对话继续读取项目约定、任务进展和 RFI 状态。Agent 能主动提出问题，人工回答后自动继续。
 
 ## 启动
 
-需要 Node.js 22。运行 `npm install`、`npm run dev`，打开 http://localhost:5173/。API 仅监听本机 `127.0.0.1:3001`，数据保存在 `data/project-plus.sqlite`。首次启动会创建一份**明确标记为示例**的连锁门店验收数据。
+Node.js 22+，执行 `npm install`、`npm run dev`，打开 http://localhost:5173/。`npm test` 检查业务流程，`npm run build` 检查类型和构建。
 
-运行 `npm test` 检查跨进程重启后的 RFI 接续、项目资料隔离、缺口识别和摘要完整性。运行 `npm run build` 构建网页。
+## 界面与本地账号
 
-## 3 分钟演示路径
+采用官方 shadcn `dashboard-01` 和 `login-03`，保留布局与组件样式，主题为橙色。注册后从空项目开始，清单、任务、RFI、资料、对话和账号保存在当前浏览器 IndexedDB。密码采用带随机盐的 PBKDF2 散列；登录状态保存在当前标签页的 sessionStorage。
 
-1. 选择“空调系统调试”，运行“检索并分析证据”。原型会引用调试报告的两个段落，并指出“二层风量待补测”。
-2. 起草 RFI；中心区域出现持久的 Human Input 卡片。选择“确认草稿”或“暂缓”。原型**不会发送 RFI 给任何人**。
-3. 新建接续会话，询问“上次验收到哪一步？”；Agent 从持久任务 checkpoint 读回待办和 RFI 状态。
-4. 将回复录入 RFI，再运行一次分析；由人阅读证据和回复后确认验收。
-5. 在“约定”页保存一条明确的项目规则；新会话的对话会读到它。“进展”页可查看事件和摘要根；`GET /api/projects/:id/manifest` 导出最小化摘要，`POST /api/verify-manifest` 校验它有没有被改动。
+这是本机原型的账号切换与数据分区，不能作为公开 SaaS 的服务端鉴权。不同浏览器的数据独立，清除站点数据会移除本地资料。清单库为同一浏览器的共享模板资产，项目按本地账号分开。旧 SQLite 原型数据未迁移、未删除，当前服务不再读写它。
 
-## 模型与资料边界
+## 使用流程
 
-默认是**规则演示**：本地词项检索、缺口关键词检查、持久任务状态和模板回复。它不等于完整语义 RAG，也不是 Torra 级长任务 Agent。将 `.env.local.example` 复制为 `.env.local`，在本机填入 `MODEL_API_KEY`、兼容 OpenAI Chat Completions 工具调用的 `MODEL_API_URL` 和 `MODEL_NAME`，即可尝试真实模型对话；`.env.local` 已被 Git 忽略。模型可调用读取项目、检索资料、分析验收项和起草 RFI 的工具，最多四轮；它不能调用“发送 RFI”或“验收通过”。工具调用协议已用模拟模型回归测试，真实模型线路尚未验证。启用模型时，项目状态与工具检索结果会发送到所配的模型服务。不要在没有数据使用许可的情况下导入真实客户资料。
+1. 注册本地账号，创建项目。
+2. 清单库支持粘贴 `{ id, name, description, tasks: [{ name, description, order }] }` 数组。预览后添加到项目，原始检查标准保留；重复添加同一模板不会重复生成任务。
+3. 在“资料与约定”添加文本资料和明确的项目规则。
+4. 打开验收任务，核验证据。候选片段显示原文、文件名和段落。
+5. 起草 RFI，确认或暂缓 Human Input。确认仅改变本地草稿状态，发送需人工完成。
+6. 记录实际收到的回复，再核验；最终由人确认验收通过。
+7. 打开项目 Agent，新建接续对话。刷新后仍可读取项目任务 checkpoint 和待确认事项。
 
-资料目前通过粘贴纯文本录入并按段落切分；PDF、Excel、权限系统、并发协作和正式的上下文压缩尚未实现。项目约定仅由用户显式保存，不会从聊天里自动学习。检索结果只是候选证据，验收结论必须人工确认。
+2026-10-08 已通过 LeanCloud 控制台读取并在本机 Chrome 导入 11 套 PunchTemplate、221 个条目。这是模板快照，不是与旧 SaaS 实时同步，也未导入其客户任务/RFI 全量数据。模板快照随本地程序提供，新浏览器首次打开时写入自己的 IndexedDB 清单库。
 
-## 可复用接口与链上状态
+## AI 回复
 
-`/api/projects/:id/continuity` 返回项目待续任务；`/api/projects/:id/manifest` 返回版本化、无原文的 SHA-256 摘要（条目状态、证据片段哈希、RFI 回复哈希）；`/api/verify-manifest` 检查摘要完整性。其他应用可消费这些接口。当前接口仅供本地原型使用，**没有账号鉴权，不可直接公开部署**。
+参考 Vercel AI SDK 的 UI 架构，实际使用 `@ai-sdk/react` 的 `useChat` 和服务端 `streamText`，支持流式 Markdown、停止生成、错误重试和客户端工具调用；资料入口保留在侧栏。界面使用现有 shadcn Card/Input 与主区域对话，避免引入第二套视觉风格。
 
-`onchain/EvidenceAnchor.sol` 是将摘要根写入 Monad 的最小合约，已在本地编译。接口返回的 `project_key` 是项目随机 ID 的 SHA-256，可作为合约的 `bytes32 projectKey`；`root` 是摘要根。**合约尚未部署到 Monad，也没有链上交易或验证链接**。私有资料和聊天原文不进入合约。当前导出的 `chain_status` 始终为 `not_anchored`。
+默认模型为 OpenRouter 的 `anthropic/claude-opus-5.5`，由服务端统一配置，用户无需选择模型。
 
-## 比赛交付状态
+复制 `.env.local.example` 为 `.env.local`，填写兼容 OpenAI Chat Completions 的 `MODEL_API_KEY`、`MODEL_API_URL` 和 `MODEL_NAME`。密钥只留在本机代理，启用后当前项目上下文、聊天和检索片段会发给配置的模型服务。
 
-目前完成：本地网页原型、持久 API、跨会话/RFI 流程、最小摘要与合约源码。待完成：真实模型接入验证、部署与鉴权、Monad Testnet 合约部署及读回、公开仓库、现场技术演示视频、项目 pitch 和最终提交。不要将本仓库或 Metropolis 后台“已保存”描述为已经交赛。
+未配置时明确显示“流程预览”，使用本地状态和检索结果回答，不伪装成真实模型。每轮最多 16 次工具调用，达到上限可手动继续；原文保留在浏览器，请求使用最近 40 条消息与较早摘录，旧原文可用历史检索工具回查。当前资料检索为中文二元词项匹配；尚未实现 embedding RAG、自动上下文压缩、PDF/Excel 解析或云端多用户协作。本机已通过 OpenRouter / Kimi K2.5 的真实流式调用、读取状态、Human Input 暂停和人工回答后续接测试；这不代表全部业务场景已验收。工具只能检索、核验、起草 RFI，不能执行人工验收或对外发送。
+
+## 历史原型与比赛边界
+
+`server/core.ts`、`server/agent.ts` 及原有测试保留早期 SQLite/摘要逻辑，未接入当前网页；当前 API 仅提供健康状态和流式模型代理，详见 `docs/API.md`。`onchain/EvidenceAnchor.sol` 仍是未部署的合约源码。公开部署、Monad 交易读回、演示视频和比赛最终提交仍未完成。
+
+各轮验收与 OpenRouter 实测记录见 `docs/UI-VALIDATION.md`。测试服务可用 `node --import tsx scripts/qa-model.ts` 启动在 5174，使用确定性的模拟模型，不代表真实模型质量。

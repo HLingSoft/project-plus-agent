@@ -1,19 +1,14 @@
-# Project+ AI Continuity API v1
+# 当前运行接口
 
-All endpoints are local to this prototype and return JSON. The current server is single-user and has no authentication; do not expose it publicly.
+Express 仅监听 127.0.0.1:3001，经 Vite 转发。本地业务数据在浏览器 IndexedDB，服务器不保存项目或账号。
 
-| Method | Endpoint | Purpose |
+| 方法 | 路径 | 用途 |
 |---|---|---|
-| GET | `/api/projects/:projectId/continuity` | Read unresolved project tasks and checkpoints across conversations. |
-| GET | `/api/projects/:projectId` | Read checklist items, documents, RFI, explicit project facts, Human Input and event history. |
-| POST | `/api/projects/:projectId/items/:itemId/analyze` | Generate source-linked candidate evidence and update task state. |
-| POST | `/api/projects/:projectId/items/:itemId/rfi` | Create an RFI draft and a persistent Human Input decision. |
-| POST | `/api/projects/:projectId/human-inputs/:inputId/resolve` | Resolve with `{ "decision": "approve" }` or `{ "decision": "defer" }`. Approval never sends externally. |
-| POST | `/api/projects/:projectId/rfis/:rfiId/answer` | Record a human-provided answer. |
-| POST | `/api/projects/:projectId/items/:itemId/accept` | Human-only confirmation after review. Never exposed as a model tool. |
-| GET | `/api/projects/:projectId/manifest` | Export a content-free continuity commitment. |
-| POST | `/api/verify-manifest` | Check a manifest's local SHA-256 root against its payload. |
+| GET | `/api/health` | 返回 `mode: model / guided-demo` 与 `storage: browser`。model 表示已配置密钥，不代表模型已验证。 |
+| POST | `/api/chat` | 接收 AI SDK UI messages 和当前项目 context，返回 UI message stream。 |
 
-`manifest.payload.schema` is `project-plus.continuity.v1`. The root is SHA-256 over UTF-8 `JSON.stringify(payload)` in the fixed output order. It contains random project/item IDs, item states, source chunk hashes and answered RFI hashes. The response also includes `project_key = SHA-256(project_id)` for the Solidity `bytes32` key. Local verification only proves the payload was not altered relative to the supplied root. To prove historical existence and signer identity, anchor the root in `EvidenceAnchor.sol` and check the transaction and caller on Monad. This final chain step is not implemented or deployed in the current prototype.
+工具：`get_project_state`、`list_templates`、`apply_template`、`list_items`、`search_documents`、`search_history`、`analyze_item`、`draft_rfi`、`ask_human`。工具在浏览器执行，对当前账号项目使用 IndexedDB 事务。`draft_rfi` 和 `ask_human` 生成持久 Human Input；确认或暂缓只能由 UI 人工操作。确认不会发送消息。人工验收没有模型工具入口。
 
-The local document search uses token overlap with Chinese bigrams and a document-level relevance threshold. It returns candidate passages with a document title and paragraph position. It is an extractive retrieval baseline, not semantic embedding retrieval or proof that an acceptance criterion is satisfied.
+`src/lib/local-store.ts` 是当前数据和业务入口：账号、模板导入、项目事务、资料检索、RFI 状态机和任务接续。旧 `/api/projects/*`、manifest 和 verify-manifest 路由已退出运行服务；早期 SQLite 实现及测试作为历史保留。
+
+请求体限 1MB、服务端消息数限 200；客户端通常只传最近 40 条、模型请求超时 60 秒。本机代理有 Origin 检查，但不是生产鉴权服务。公开部署需要另行实现服务端认证、数据隔离和请求配额。

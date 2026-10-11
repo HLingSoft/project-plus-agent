@@ -23,3 +23,8 @@ data/
 *.njsproj
 *.sln
 *.sw?
+
+.vercel
+.local-secrets/
+output/
+.env*
