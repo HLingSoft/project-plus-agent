@@ -119,3 +119,13 @@
 - 网站可用不等于 Monad 集成完成；比赛页面会话已过期，未回填或最终提交。
 
 - 追加 Chrome 真实线上测试：Opus 读取空项目状态、调用 ask_human，显示电视/网络/电话选项并暂停，发送按钮禁用。截图 output/vercel-human-input.jpg。
+
+## 2026-10-11 pre-submission end-to-end review
+
+Production browser test used only synthetic hotel evidence. The actual model selected and applied the three-entry weak-current template, retrieved initial evidence, analyzed only the network item, drafted one RFI and paused for Human Input. A person confirmed the draft, entered a simulated reply and added the retest report. A new task read that saved state, cited both reports and left the network item ready for human review; television and telephone remained unstarted.
+
+Review found and corrected three issues: template lookup did not search inspection entries/compound Chinese phrases; model citation indices could start at zero; retrieval could omit measurement paragraphs adjacent to requirements. Regression coverage added for all three. 25 tests pass. No video links have been supplied and no final competition submission has been made.
+
+After deployment, the task evidence includes the retest measurement paragraph. An explicit UI acceptance action changed only the synthetic network item to accepted; TV and telephone stayed unstarted. The actual browser-exported record was anchored at transaction `0x1ef9e64874fcdda35b626ad0bf6b81e44859af6f73a38fdb40ffc796defa9827`, block 70049744; changed digest and wrong owner both return false.
+
+Production browser imported this full proof and displayed “验证通过 · 区块 70049744” / “与该地址最新提交一致。” Screenshot: `output/acceptance-proof-verified.png`. Metropolis description now includes both proof scopes; draft remains 4/5 with only video fields incomplete.

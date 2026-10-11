@@ -9,7 +9,10 @@
 - Production browser verifier confirms event, receipt and latest digest. Modified record rejected; wrong digest and other owner return false.
 - Contract proof establishes record consistency, not inspection truth. Public sample contains a Human Input decision, not a completed acceptance report.
 - Local signing path verified. Browser injected-wallet signing is implemented but has not been exercised in this browser.
-- Build and existing tests pass; three record-proof tests pass. Existing lint warnings remain.
+- Production acceptance/RFI workflow completed with synthetic data: draft approval, simulated reply, retest, cross-conversation continuation, then explicit human acceptance. TV/telephone remained unstarted.
+- Full record transaction: `0x1ef9e64874fcdda35b626ad0bf6b81e44859af6f73a38fdb40ffc796defa9827`, block 70049744. Proof: `onchain/deployments/acceptance-proof.json`.
+- Three review fixes deployed: checklist query matching, one-based source citations, and adjacent evidence-paragraph retention. Source commit c0fd668; production deployment dpl_F4uR1sCF6ggpzqEe5VJGfZvdwfVM.
+- 25 tests pass; production build passes. Existing lint warnings remain.
 
 ## Metropolis draft
 - Google login restored using the original account.
