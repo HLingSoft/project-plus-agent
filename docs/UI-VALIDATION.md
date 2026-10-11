@@ -105,3 +105,15 @@
 - 原流程预览文案已由实际模型模式替换。截图 output/openrouter-live.jpg。
 - 现有构建产物不含密钥；git diff --check 通过。此次只修改本地配置、配置样例和文档，未改运行时代码。
 - 该结果证明这条真实模型链路可用，不代表所有模型/长任务场景或比赛提交已完成。
+
+## 2026-10-10：公开仓库与 Vercel
+
+- GitHub 公共仓库 https://github.com/HLingSoft/project-plus-agent ，默认分支 main。
+- 正式网站 https://project-plus-agent.vercel.app 。模型默认 anthropic/claude-opus-5.5，经 OpenRouter 服务端调用。
+- 首次部署发现 `.ts` 导入在 Node 编译后找不到模块。改为 NodeNext 可解析的 `.js` 引用并为 api 提供独立 tsconfig；二次部署无该错误。
+- 线上健康接口 HTTP 200，mode=model，未认证 accessRequired=true。
+- 线上匿名模型请求 401；访问码换取 HttpOnly/Secure/SameSite=Strict cookie 后请求 200。
+- 线上真实 Opus 模型返回 get_project_state 工具调用与 SSE DONE；读取到 6 个响应数据块，无 error 事件。
+- Chrome：访问码进入、本地账号注册、项目创建、Agent 首页加载通过。
+- 本轮整体测试 18 项通过；之后新增部署访问集成测试，针对访问、签名 cookie、流协议 3 项通过；再次修改 Node 模块引用后，部署与流协议 2 项、构建通过。
+- 网站可用不等于 Monad 集成完成；比赛页面会话已过期，未回填或最终提交。

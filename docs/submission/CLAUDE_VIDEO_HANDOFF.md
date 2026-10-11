@@ -4,7 +4,8 @@
 
 ## 项目与运行
 
-- 仓库：交接时查看本目录 STATUS.md 的已验证地址。
+- 公开仓库：https://github.com/HLingSoft/project-plus-agent 。线上：https://project-plus-agent.vercel.app 。
+- 线上先输入评审访问码；负责人本机 `.local-secrets/reviewer-access.txt` 保存该码，不要录屏或公开。
 - 本地：`npm ci`、复制 `.env.local.example` 到 `.env.local`，由负责人配置服务端密钥，运行 `npm run dev`，打开 http://localhost:5173。
 - 默认 OpenRouter / anthropic/claude-opus-5.5。不要录到环境文件、密钥、浏览器密码管理器或其他客户项目。
 - 新建本地测试账号和项目“演示酒店 · 弱电验收”。所有演示报告必须标注“合成演示资料”。

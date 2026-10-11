@@ -1,4 +1,10 @@
-# 项目家 Project+ AI
+# Project+ AI · 项目家
+
+- Live app: https://project-plus-agent.vercel.app
+- Reviewer access: obtain the private review code from the project owner, then create a browser-local account.
+- [Video handoff and scripts](docs/submission/CLAUDE_VIDEO_HANDOFF.md)
+- [Submission status and remaining work](docs/submission/STATUS.md)
+
 
 以 Agent 对话为主的独立工作台：从已有清单生成项目任务，检索资料、起草 RFI，并在需要决策时等待 Human Input。新对话继续读取项目约定、任务进展和 RFI 状态。Agent 能主动提出问题，人工回答后自动继续。
 
@@ -36,6 +42,6 @@ Node.js 22+，执行 `npm install`、`npm run dev`，打开 http://localhost:517
 
 ## 历史原型与比赛边界
 
-`server/core.ts`、`server/agent.ts` 及原有测试保留早期 SQLite/摘要逻辑，未接入当前网页；当前 API 仅提供健康状态和流式模型代理，详见 `docs/API.md`。`onchain/EvidenceAnchor.sol` 仍是未部署的合约源码。公开部署、Monad 交易读回、演示视频和比赛最终提交仍未完成。
+`server/core.ts`、`server/agent.ts` 及原有测试保留早期 SQLite/摘要逻辑，未接入当前网页；当前 API 仅提供健康状态和流式模型代理，详见 `docs/API.md`。`onchain/EvidenceAnchor.sol` 仍是未部署的合约源码。网站已部署到 Vercel；Monad 产品集成与交易读回、演示视频和比赛最终提交仍未完成。
 
 各轮验收与 OpenRouter 实测记录见 `docs/UI-VALIDATION.md`。测试服务可用 `node --import tsx scripts/qa-model.ts` 启动在 5174，使用确定性的模拟模型，不代表真实模型质量。
