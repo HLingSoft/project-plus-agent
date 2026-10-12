@@ -120,8 +120,12 @@ export function retrieve(project: Project, query: string): Evidence[] {
       return { id: `${doc.id}:${position}`, item_id: '', document_id: doc.id, document_title: doc.title, position, body, score }
     })
     if (!results.some(r => r.score >= .25)) return []
-    return results.filter((r, i) => r.score >= .15 || gapPattern.test(r.body) || (results[i - 1]?.score ?? 0) >= .25 || (results[i + 1]?.score ?? 0) >= .25)
-  }).sort((a, b) => b.score - a.score).slice(0, 5)
+    return results.flatMap((r, i) => {
+      const previous = results[i - 1]?.score ?? 0, next = results[i + 1]?.score ?? 0
+      if (r.score < .15 && !gapPattern.test(r.body) && previous < .25 && next < .25) return []
+      return [{ ...r, rank: Math.max(r.score, previous * .9, next * .8) }]
+    })
+  }).sort((a, b) => b.rank - a.rank).slice(0, 5).map(({ rank: _rank, ...evidence }) => evidence)
 }
 function itemOf(project: Project, itemId: string) { const item = project.items.find(i => i.id === itemId); if (!item) throw new Error('验收任务不存在。'); return item }
 function checkpoint(project: Project, itemId: string, status: string, text: string) {
