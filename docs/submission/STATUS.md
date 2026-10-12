@@ -18,10 +18,11 @@
 - Google login restored using the original account.
 - Logo, title, description, GTM, public repository and live product saved.
 - Review access code supplied only to private Judge access instructions with explicit user permission.
-- Checklist: 4/5; primary track, project details, logo and live product complete.
+- Checklist reached 5/5 after both video links were saved on October 11, 2026, 19:48 PDT (October 12, 02:48 UTC).
+- Reloaded Submission page shows “Ready for judging” and the saved time; video URLs persist.
 - Primary track: Trust, Identity & AI Infrastructure. No unsupported sponsor bounty claims.
-- Remaining required fields: technical demo video (≤3 minutes) and pitch video (≤2 minutes).
-- Final submission has NOT occurred. Saved draft is not final submission.
+- All required fields complete. Technical demo 136.5 seconds; pitch 110 seconds.
+- Saving the complete entry transitioned the site directly to its “Ready for judging” summary with an Edit entry button. No separate final-submit control was presented. This is the verified platform state.
 - Deadline verified in UI: October 13, 2026, 20:59 PDT.
 
 ## Video handoff ready
@@ -32,3 +33,11 @@
 - Local ZIP: output/ProjectPlus-Claude-Video-Kit.zip . No secrets included.
 
 Wallet private key stays in ignored `.local-secrets/monad-testnet-wallet.json` (0600). The model key remains server-side. Never place either in submission fields or video.
+
+## Videos published — October 11, 2026, 19:48 PDT
+- Technical demo: https://project-plus-agent.vercel.app/videos/technical-demo.html
+- Pitch: https://project-plus-agent.vercel.app/videos/pitch.html
+- Hosted on the existing Vercel product site; both pages and MP4s accessible without authentication. Native browser playback verified; H.264/AAC 1920×1080, both within limits.
+- Source MP4 SHA256 matches Claude handoff: technical 0e721d53351f5aa617b4a2f492c0e35a9bcea92b4c6457dda8cb5c1380ac2d51; pitch 977e22150521844334981ddc651d6654e169e5fac92ea93e63b26e377714025b.
+- Deployment: https://project-plus-agent-6fua8lubb-jkershcn-gmailcoms-projects.vercel.app ; alias updated successfully.
+- Screenshot: output/submission-ready-for-judging.png .
