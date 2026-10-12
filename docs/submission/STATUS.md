@@ -44,3 +44,6 @@ Wallet private key stays in ignored `.local-secrets/monad-testnet-wallet.json` (
 
 ## Independent submission confirmation
 Dashboard was opened and refreshed after video submission. It explicitly shows “Ready for judging”, “Your latest saved entry is ready. You can save changes until the deadline.”, “5 / 5 complete”, and “All steps complete”. The “Submit your project” checklist row is checked and struck through, with “View submission” replacing the prior continuation action. Screenshot: output/dashboard-submission-complete.png . This verifies the site's submission-complete state beyond populated form fields.
+
+## Fresh judge-flow check
+Independent browser test passed anonymous video playback, private access, new-account registration, actual agent tools, Human Input choice/approval, RFI reply, reload, login recovery, cross-conversation continuation and wallet-free Monad verification. Evidence-association and ranking fixes deployed; 26 tests pass. See JUDGE_FLOW_CHECK.md for the exact scenario and production receipt. Private judge instructions now include a public synthetic-evidence document link and copyable prompts. Ready for judging remains.
