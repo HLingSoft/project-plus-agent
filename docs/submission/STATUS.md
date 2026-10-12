@@ -41,3 +41,6 @@ Wallet private key stays in ignored `.local-secrets/monad-testnet-wallet.json` (
 - Source MP4 SHA256 matches Claude handoff: technical 0e721d53351f5aa617b4a2f492c0e35a9bcea92b4c6457dda8cb5c1380ac2d51; pitch 977e22150521844334981ddc651d6654e169e5fac92ea93e63b26e377714025b.
 - Deployment: https://project-plus-agent-6fua8lubb-jkershcn-gmailcoms-projects.vercel.app ; alias updated successfully.
 - Screenshot: output/submission-ready-for-judging.png .
+
+## Independent submission confirmation
+Dashboard was opened and refreshed after video submission. It explicitly shows “Ready for judging”, “Your latest saved entry is ready. You can save changes until the deadline.”, “5 / 5 complete”, and “All steps complete”. The “Submit your project” checklist row is checked and struck through, with “View submission” replacing the prior continuation action. Screenshot: output/dashboard-submission-complete.png . This verifies the site's submission-complete state beyond populated form fields.
