@@ -23,3 +23,13 @@ test('inspection retrieval keeps measurements adjacent to a matching requirement
   const results = retrieve(p,'检查网络线路是否已通，其稳定性、网速是否符合要求')
   assert.ok(results.some(e=>e.position===1 && e.body.includes('丢包率 0%')))
 })
+test('inspection associates concise reports even when they do not repeat the checklist wording', async () => {
+  const { newProject, addItem, analyze } = await import('../src/lib/local-store.js')
+  const p = newProject('judge flow')
+  const item = addItem(p, '网络线路', '检查网络线路是否已通，其稳定性、网速是否符合要求')
+  p.documents.push({id:'retest',title:'合成复测记录 v1',created_at:'test',body:'合成演示资料，版本 v1，日期 2026-10-11。\n\n客房 301 连续网络连接 30 分钟，无中断，丢包率不超过 1%，下载速度至少 80 Mbps。\n\n客房 301 连续连接 30 分钟，无中断，丢包率 0%，三次下载速度 91、94、93 Mbps。'})
+  analyze(p, item.id)
+  assert.ok(p.evidence.some(e => e.item_id === item.id && e.body.includes('91、94、93')))
+  assert.notEqual(item.status, 'accepted')
+  assert.ok(p.evidence.every(e => e.document_id === 'retest'))
+})

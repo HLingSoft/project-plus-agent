@@ -132,7 +132,8 @@ function checkpoint(project: Project, itemId: string, status: string, text: stri
 export function analyze(project: Project, itemId: string) {
   const item = itemOf(project, itemId); if (item.status === 'accepted') throw new Error('这项任务已由人工验收。')
   if (project.rfis.some(r => r.item_id === itemId && r.status === 'open') || project.human_inputs.some(h => h.item_id === itemId && h.status === 'pending')) return
-  const found = retrieve(project, `${item.title} ${item.criteria}`).map(e => ({ ...e, item_id: itemId })); project.evidence = project.evidence.filter(e => e.item_id !== itemId).concat(found)
+  const matching = retrieve(project, `${item.title} ${item.criteria}`)
+  const found = (matching.length ? matching : retrieve(project, item.title)).map(e => ({ ...e, item_id: itemId })); project.evidence = project.evidence.filter(e => e.item_id !== itemId).concat(found)
   const replied = project.rfis.some(r => r.item_id === itemId && r.status === 'answered')
   item.status = replied || (found.some(e => e.score >= .25) && !found.some(e => gapPattern.test(e.body))) ? 'ready_for_review' : 'needs_evidence'
   checkpoint(project, itemId, item.status === 'ready_for_review' ? 'ready_for_review' : 'active', item.status === 'ready_for_review' ? '已整理候选证据或 RFI 回复，等待人工核对验收标准。' : '验收资料存在缺口，需要补充证据或发起 RFI。')
